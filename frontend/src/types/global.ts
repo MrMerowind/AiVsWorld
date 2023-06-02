@@ -1,1 +1,1 @@
-export enum Seasons{Winter, Spring, Summer, Autumn};
+export enum Seasons{Winter = "Zima", Spring = "Wiosna", Summer = "Lato", Autumn = "Jesień"};

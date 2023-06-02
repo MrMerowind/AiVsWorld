@@ -58,7 +58,7 @@ export class SingleWorld{
             else if(this.season === Seasons.Autumn) this.globalTemperature = 140; 
             else if(this.season === Seasons.Winter) this.globalTemperature = 100;
 
-            console.log("Aktualny sezon: ", this.season.toString());
+            console.log("Aktualny sezon: ", this.season);
 
         }
         this.applySeasonTemperature();

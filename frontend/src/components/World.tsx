@@ -23,9 +23,13 @@ export function World() {
     <>
         {ctx.bestWorld?.grass.map((value, index) =>
             {
-                const posX = Math.floor(index % SingleWorld.WORLD_WIDTH);
-                const posY = Math.floor(Math.floor(index - posX) / SingleWorld.WORLD_WIDTH);
-                return (<TileComponent key={index} path={Terrain.getPath(value)} positionX={posX + ctx.camera.getOffsetX()} positionY={posY + ctx.camera.getOffsetY()} scale={tileScale} width={tileSize} height={tileSize} />)
+                const posX = Math.floor(index % SingleWorld.WORLD_WIDTH) - ctx.camera.getOffsetX();
+                const posY = Math.floor(Math.floor(index - posX) / SingleWorld.WORLD_WIDTH) - ctx.camera.getOffsetY();
+
+                const isOutOfScreen = posX < - tileSize || posX > tileSize + ctx.screen.getWidth() || posY < - tileSize || posY > tileSize + ctx.screen.getHeight();
+                if(isOutOfScreen) return null;
+
+                return (<TileComponent key={index} path={Terrain.getPath(value)} positionX={posX} positionY={posY} scale={tileScale} width={tileSize} height={tileSize} />)
             })}
     </>
   )
