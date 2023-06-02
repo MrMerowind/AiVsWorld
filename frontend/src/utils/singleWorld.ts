@@ -1,4 +1,4 @@
-import { Seasons } from "../types/global";
+import { OnGrass, Seasons } from "../types/global";
 import { getRandom, setSeed } from "./rand";
 
 
@@ -27,7 +27,12 @@ export class SingleWorld{
                 this.grass[grassIndex] = 160;
 
                 this.onGrass[grassIndex] = 0;
-                if(getRandom() * 10 < 1) this.onGrass[grassIndex] = 17;
+                const rnd = getRandom() * 2000;
+                if(rnd < 200) this.onGrass[grassIndex] = OnGrass.Bush;
+                else if(rnd < 250) this.onGrass[grassIndex] = OnGrass.Rat;
+                else if(rnd < 275) this.onGrass[grassIndex] = OnGrass.Panda;
+                else if(rnd < 280) this.onGrass[grassIndex] = OnGrass.Alces;
+                else if(rnd < 281) this.onGrass[grassIndex] = OnGrass.Ridder;
             }
         }
     }
