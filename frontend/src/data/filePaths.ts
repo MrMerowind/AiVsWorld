@@ -32,7 +32,7 @@ export class Terrain{
         if(!this.textures.has(path))
         {
             this.textures.set(path, null);
-            Assets.load(path).then(texture => this.textures.set(path, texture));
+            if(!path.includes("img/0.png")) Assets.load(path).then(texture => this.textures.set(path, texture));
         }
 
         return this.textures.get(path);

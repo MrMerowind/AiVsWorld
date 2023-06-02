@@ -1,9 +1,11 @@
 import { Seasons } from "../types/global";
+import { getRandom, setSeed } from "./rand";
 
 
 
 export class SingleWorld{
     grass: number[] = new Array<number>(SingleWorld.WORLD_WIDTH * SingleWorld.WORLD_HEIGHT);
+    onGrass: number[] = new Array<number>(SingleWorld.WORLD_WIDTH * SingleWorld.WORLD_HEIGHT);
     season: Seasons = Seasons.Spring;
     globalTemperature: number = 160;
     private timeElapsed: number = 0;
@@ -14,15 +16,18 @@ export class SingleWorld{
     static readonly WORLD_TICK_TIME = 100;
     static readonly WORLD_SEASON_TICKS = 200;
     public tickCount: number = 0;
-
     constructor()
     {
+        setSeed(1595423);
         for(let i = 0; i < SingleWorld.WORLD_WIDTH; i++)
         {
             for(let j = 0; j < SingleWorld.WORLD_HEIGHT; j++)
             {
                 const grassIndex = i + j * SingleWorld.WORLD_WIDTH; 
                 this.grass[grassIndex] = 160;
+
+                this.onGrass[grassIndex] = 0;
+                if(getRandom() * 10 < 1) this.onGrass[grassIndex] = 17;
             }
         }
     }
