@@ -16,6 +16,30 @@ export class Brain{
         rat: number | null, panda: number | null, alces: number | null, ridder: number | null]> = new Array<[number, number | null, number | null, number | null, number | null,number | null,number | null, number | null]>(81);
     visionBoardPlayer: Array<[value: number, checked: boolean]> = new Array<[number, boolean]>(40);
 
+
+    evolution()
+    {
+        const neuron2 = Math.floor(Math.random() * this.neurons2.length);
+        this.endFunctions[Math.floor(Math.random() * this.endFunctions.length)][Math.floor(Math.random() * 3 + 1)] = neuron2;
+
+        const neuron1 = Math.floor(Math.random() * this.neurons1.length);
+        this.neurons2[neuron2][Math.floor(Math.random() * 3 + 1)] = neuron1;
+        this.neurons2[neuron2][0] = Math.random() * 2 - 1;
+
+        const visionIndex = Math.floor(Math.random() * 121);
+        this.neurons1[neuron1][Math.floor(Math.random() * 3 + 1)] = visionIndex;
+        this.neurons1[neuron1][0] = Math.random() * 2 - 1;
+
+        if(visionIndex > 80)
+        {
+            this.visionBoardPlayer[visionIndex - 81][0] = Math.random() * 2 - 1;
+        }
+        else
+        {
+            for(let i = 1; i < 8; i++) this.visionBoardOnGrass[visionIndex][i] = Math.random() * 2 - 1;
+        }
+    }
+        
     peekBoard(wolrd: SingleWorld)
     {
         const health = wolrd.player.health;
@@ -69,7 +93,7 @@ export class Brain{
         // TODO: If crased check this 80 number
         if(visionBoardIndex > 80)
         {
-            visionBoardIndex -= 80;
+            visionBoardIndex -= 81;
             if(this.visionBoardPlayer[visionBoardIndex][1]) return this.visionBoardPlayer[visionBoardIndex][0];
             else return 0;
         }
