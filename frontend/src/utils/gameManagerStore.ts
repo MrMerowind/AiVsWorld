@@ -37,7 +37,11 @@ export class GameManagerStore implements IGameManagerStore{
         for(let i = 0; i < brainLimit; i++)
             this.brains[i] = new Brain(this.bestBrainCopy);
         for(let i = 0; i < brainLimit; i++)
+        {
             this.brains[i].evolution();
+            this.brains[i].evolution();
+            this.brains[i].evolution();
+        }
     }
 
     resetWorlds()
@@ -65,6 +69,11 @@ export class GameManagerStore implements IGameManagerStore{
             this.screen = new GameScreen();
             this.camera = new GameCamera();
             this.bestBrainCopy = new Brain();
+
+            const savedBrain = localStorage.getItem("brain");
+            if(savedBrain)
+                this.bestBrainCopy = JSON.parse(savedBrain) as Brain;
+
             this.bestWorldCopy = new SingleWorld();
 
             for(let i = 0; i < SingleWorld.WORLD_COUNT; i++)

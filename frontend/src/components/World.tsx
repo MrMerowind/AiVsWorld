@@ -6,6 +6,7 @@ import { SingleWorld } from '../utils/singleWorld';
 import { useTick } from '@pixi/react';
 import { backgroundMovesPerPreview, tileScale, tileSize } from '../types/global';
 import { Brain } from '../utils/brain';
+import { stringify } from 'querystring';
 
 export function World() {
 
@@ -16,18 +17,6 @@ export function World() {
     const bestScore = useRef(0);
 
     useTick((delta) => {
-        
-        let allFinished = true;
-        for(let i = 0; i < ctx.worlds.length; i++)
-        {
-            if(!ctx.worlds[i].isGameFinished()) allFinished = false;
-        }
-        if(allFinished)
-        {
-            ctx.copyBestBrain();
-            ctx.resetWorlds();
-        }
-
         
         for(let i = 0; i < ctx.brains.length; i++)
         {
@@ -46,6 +35,7 @@ export function World() {
                     {
                         bestScore.current = ctx.worlds[i].player.survivalPoints;
                         ctx.bestBrainCopy = new Brain(ctx.brains[i]);
+                        localStorage.setItem("brain", JSON.stringify(ctx.bestBrainCopy));
                         console.log("Score: ", bestScore.current);
                     }
                 }
@@ -66,7 +56,18 @@ export function World() {
                 ctx.previewWorld = new SingleWorld();
             }
         }
+        let allFinished = true;
+        for(let i = 0; i < ctx.worlds.length; i++)
+        {
+            if(!ctx.worlds[i].isGameFinished()) allFinished = false;
+        }
+        if(allFinished)
+        {
+            ctx.copyBestBrain();
+            ctx.resetWorlds();
+        }
     });
+
 
 
   return (

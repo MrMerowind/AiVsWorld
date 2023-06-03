@@ -4,18 +4,21 @@ import { SingleWorld } from "./singleWorld";
 
 type NeuronType = [value: number, a: number | null, b: number | null, c: number | null];
 type EndFunctionType = [fn: () => void, a: number | null, b: number | null, c: number | null];
+type VisionBoardOnGrassType = [value: number, wall: number | null, fireplace: number | null, bush: number | null,
+    rat: number | null, panda: number | null, alces: number | null, ridder: number | null];
+
+type VisionBoardPlayerType = [value: number, checked: boolean];
 
 export class Brain{
 
     endFunctions: Array<EndFunctionType> = new Array<[() => void, number | null, number | null, number | null]>();
 
-    neurons2: Array<NeuronType> = new Array<[number, number | null, number | null,number | null]>(10);
+    neurons2: Array<NeuronType> = new Array<NeuronType>(10);
 
-    neurons1: Array<NeuronType> = new Array<[number, number | null, number | null,number | null]>(10);
+    neurons1: Array<NeuronType> = new Array<NeuronType>(100);
 
-    visionBoardOnGrass: Array<[value: number, wall: number | null, fireplace: number | null, bush: number | null,
-        rat: number | null, panda: number | null, alces: number | null, ridder: number | null]> = new Array<[number, number | null, number | null, number | null, number | null,number | null,number | null, number | null]>(81);
-    visionBoardPlayer: Array<[value: number, checked: boolean]> = new Array<[number, boolean]>(40);
+    visionBoardOnGrass: Array<VisionBoardOnGrassType> = new Array<VisionBoardOnGrassType>(81);
+    visionBoardPlayer: Array<VisionBoardPlayerType> = new Array<VisionBoardPlayerType>(40);
 
 
     evolution()
@@ -31,13 +34,20 @@ export class Brain{
         this.neurons1[neuron1][Math.floor(Math.random() * 3 + 1)] = visionIndex;
         this.neurons1[neuron1][0] = Math.random() * 2 - 1;
 
-        if(visionIndex > 80)
+        if(visionIndex > 81)
         {
             this.visionBoardPlayer[visionIndex - 81][0] = Math.random() * 2 - 1;
         }
-        else
+        else if (visionIndex <= 81)
         {
-            for(let i = 1; i < 8; i++) this.visionBoardOnGrass[visionIndex][i] = Math.random() * 2 - 1;
+            this.visionBoardOnGrass[visionIndex][0] = Math.random() * 8 + 10;
+            this.visionBoardOnGrass[visionIndex][1] = Math.random() * 2 - 1;
+            this.visionBoardOnGrass[visionIndex][2] = Math.random() * 2 - 1;
+            this.visionBoardOnGrass[visionIndex][3] = Math.random() * 2 - 1;
+            this.visionBoardOnGrass[visionIndex][4] = Math.random() * 2 - 1;
+            this.visionBoardOnGrass[visionIndex][5] = Math.random() * 2 - 1;
+            this.visionBoardOnGrass[visionIndex][6] = Math.random() * 2 - 1;
+            this.visionBoardOnGrass[visionIndex][7] = Math.random() * 2 - 1;
         }
     }
         
@@ -57,9 +67,9 @@ export class Brain{
         let visionBoardIndex = 0;
         
 
-        for(let i = -8; i < 9; i++)
+        for(let i = -4; i < 5; i++)
         {
-            for(let j = -8; j < 9; j++)
+            for(let j = -4; j < 5; j++)
             {
                 const tilePosX = ((posX + i) + SingleWorld.WORLD_WIDTH) % SingleWorld.WORLD_WIDTH;
                 const tilePosY = ((posY + j) + SingleWorld.WORLD_HEIGHT) % SingleWorld.WORLD_HEIGHT;
@@ -73,7 +83,8 @@ export class Brain{
 
                 const index = tilePosX + tilePosY * SingleWorld.WORLD_WIDTH;
                 // TODO: Fix next line
-                this.visionBoardOnGrass[visionBoardIndex] = [0,0,0,0,0,0,0,0];
+                if(!this.visionBoardOnGrass[visionBoardIndex])
+                    this.visionBoardOnGrass[visionBoardIndex] = [0,0,0,0,0,0,0,0];
                 this.visionBoardOnGrass[visionBoardIndex][0] = world.onGrass[index];
                 visionBoardIndex++;
             }
@@ -103,10 +114,9 @@ export class Brain{
         if(visionBoardIndex < 0 || visionBoardIndex > 120) return 0;
 
         // TODO: If crased check this 80 number
-        if(visionBoardIndex > 80)
+        if(visionBoardIndex > 81)
         {
-            visionBoardIndex -= 81;
-            if(this.visionBoardPlayer[visionBoardIndex][1]) return this.visionBoardPlayer[visionBoardIndex][0];
+            if(this.visionBoardPlayer[visionBoardIndex - 81][1]) return this.visionBoardPlayer[visionBoardIndex - 81][0];
             else return 0;
         }
         else
@@ -131,7 +141,7 @@ export class Brain{
             if(this.neurons1[neuronNumber][1] !== null)
             sum += (neuronNumber ? this.calculateFromVisionBoard(this.neurons1[neuronNumber][1] as number) : 0) as number;
         }
-        if(sum > 0) return this.neurons2[neuronNumber][0];
+        if(sum > 0) return this.neurons1[neuronNumber][0];
     }
 
     calculateNeuronNode2(neuronNumber: number)
@@ -153,8 +163,8 @@ export class Brain{
 
     makeDecision(world: SingleWorld)
     {
-        this.connectFuncions(world);
         this.peekBoard(world);
+        this.connectFuncions(world);
 
         let highestScore = 0;
         let index = 0;
