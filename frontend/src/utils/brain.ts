@@ -140,7 +140,15 @@ export class Brain{
 
     constructor(best: Brain | null = null)
     {
-        return;
+        if(best !== null)
+        {
+            const copy = JSON.parse(JSON.stringify(best)) as Brain;
+            this.endFunctions = copy.endFunctions;
+            this.neurons2 = copy.neurons2;
+            this.neurons1 = copy.neurons1;
+            this.visionBoardOnGrass = copy.visionBoardOnGrass;
+            this.visionBoardPlayer = copy.visionBoardPlayer;
+        }
     }
 
 }
