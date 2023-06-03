@@ -54,7 +54,7 @@ export class Brain{
     peekBoard(world: SingleWorld)
     {
         const health = world.player.getHealth();
-        const warmth = world.player.warmth;
+        const warmth = world.player.getWarmth();
         const energy = world.player.energy;
         const inventory = world.player.getInventory();
         const posX = world.player.positionX;

@@ -11,7 +11,7 @@ export class SingleWorld{
     static readonly WORLD_COUNT = brainLimit;
     static readonly WORLD_WIDTH = 50;
     static readonly WORLD_HEIGHT = 50;
-    static readonly WORLD_TICK_TIME = 200;
+    static readonly WORLD_TICK_TIME = 100;
     static readonly WORLD_SEASON_TICKS = 200;
     static readonly WORLD_BURNING_MINIMUM_TEMPERATURE = 180;
     static readonly WORLD_ZERO_TEMPERATURE = 100;
@@ -137,23 +137,23 @@ export class SingleWorld{
                 
                 if(this.onGrass[enemyIndex] === OnGrass.Rat)
                 {
-                    this.player.addHealth(EnemyDamage.Rat);
-                    this.player.addInventory(1);
+                    this.player.addHealth(-EnemyDamage.Rat);
+                    //this.player.addInventory(1);
                     this.player.energy -= 2;
                 } else if(this.onGrass[enemyIndex] === OnGrass.Panda)
                 {
-                    this.player.addHealth(EnemyDamage.Panda);
-                    this.player.addInventory(2);
+                    this.player.addHealth(-EnemyDamage.Panda);
+                    //this.player.addInventory(2);
                     this.player.energy -= 2;
                 } else if(this.onGrass[enemyIndex] === OnGrass.Alces)
                 {
-                    this.player.addHealth(EnemyDamage.Alces);
-                    this.player.addInventory(5);
+                    this.player.addHealth(-EnemyDamage.Alces);
+                    //this.player.addInventory(5);
                     this.player.energy -= 2;
                 } else if(this.onGrass[enemyIndex] === OnGrass.Ridder)
                 {
-                    this.player.addHealth(EnemyDamage.Ridder);
-                    this.player.addInventory(10);
+                    this.player.addHealth(-EnemyDamage.Ridder);
+                    //this.player.addInventory(10);
                     this.player.energy -= 2;
                 }
 
@@ -273,8 +273,16 @@ export class SingleWorld{
 
     isGameFinished()
     {
-        if(this.player.getHealth() <= 0) return true;
+        if(this.player.getHealth() <= 0 || this.player.getWarmth() <= 0) return true;
         else return false;
+    }
+
+    calculatePlayerWarmth()
+    {
+        const onGrassIndex = this.player.positionX + this.player.positionY * SingleWorld.WORLD_WIDTH;
+        const temperatureOfSpace = this.grass[onGrassIndex] - 100;
+
+        this.player.addWarmth(- Math.max(50 - (temperatureOfSpace), 0) / 10);
     }
 
     play(delta: number | null = null): boolean
@@ -295,6 +303,7 @@ export class SingleWorld{
         this.spreadFire();
         this.spreadWarmth();
         this.player.addHealth(-1);
+        this.calculatePlayerWarmth();
         return true;
     }
 
@@ -317,29 +326,29 @@ export class SingleWorld{
             this.player.addInventory(1);
         } else if(this.onGrass[newIndex] === OnGrass.Fireplace)
         {
-            this.player.addHealth(Player.FIRE_DAMAGE);
+            this.player.addHealth(-Player.FIRE_DAMAGE);
         } else if(this.onGrass[newIndex] === OnGrass.Rat)
         {
-            this.player.addHealth(EnemyDamage.Rat);
-            this.player.addInventory(1);
+            this.player.addHealth(-EnemyDamage.Rat);
+            //this.player.addInventory(1);
             this.player.energy -= 1;
             this.onGrass[newIndex] = 0;
         } else if(this.onGrass[newIndex] === OnGrass.Panda)
         {
-            this.player.addHealth(EnemyDamage.Panda);
-            this.player.addInventory(2);
+            this.player.addHealth(-EnemyDamage.Panda);
+            //this.player.addInventory(2);
             this.player.energy -= 1;
             this.onGrass[newIndex] = 0;
         } else if(this.onGrass[newIndex] === OnGrass.Alces)
         {
-            this.player.addHealth(EnemyDamage.Alces);
-            this.player.addInventory(5);
+            this.player.addHealth(-EnemyDamage.Alces);
+            //this.player.addInventory(5);
             this.player.energy -= 1;
             this.onGrass[newIndex] = 0;
         } else if(this.onGrass[newIndex] === OnGrass.Ridder)
         {
-            this.player.addHealth(EnemyDamage.Ridder);
-            this.player.addInventory(10);
+            this.player.addHealth(-EnemyDamage.Ridder);
+            //this.player.addInventory(10);
             this.player.energy -= 1;
             this.onGrass[newIndex] = 0;
         }

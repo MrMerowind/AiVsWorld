@@ -7363,6 +7363,11 @@ node-sass@^9.0.0:
     stdout-stream "^1.4.0"
     "true-case-path" "^2.2.1"
 
+nom-events@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/nom-events/-/nom-events-1.0.3.tgz#d3deb90d79662d9f9ea231aa54bf0b85050faf14"
+  integrity sha512-eufHqCE9RgyoHUj2GF9XFwgFNS07vFXhTz8uqK+LAkXQdXD7vyYDPOLtik0VDIacBT4nEdKyoBMj4ZkTCy1xtA==
+
 nopt@^5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/nopt/-/nopt-5.0.0.tgz#530942bb58a512fccafe53fe210f13a25355dc88"
@@ -7778,6 +7783,20 @@ pixi-react@^1.2.2:
     eventemitter3 "^3.1.0"
     pixi-lib x.x.x
     pixi.js "^4.5.0"
+
+pixi.js-keyboard@^1.1.6:
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/pixi.js-keyboard/-/pixi.js-keyboard-1.1.6.tgz#de7497ee3edc2c3fc5826998b236ffbe11c9df9e"
+  integrity sha512-jG70Z2tik13RLOggX4gmaL3VrEresBV9bn/MgbOFAszeS47CBZ+D7b3MRJG8GUHWrHZ4CavFGV/pCp4Pt/MA5g==
+  dependencies:
+    nom-events "^1.0.3"
+
+pixi.js-mouse@^1.1.6:
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/pixi.js-mouse/-/pixi.js-mouse-1.1.6.tgz#465b93dc0459cb81a206311d2f0f809810c38143"
+  integrity sha512-2CjHaAEMnG8+ijjV9YL1rdQuebqpT6byAfpTOVQTyBtC5MrMY7lu5YPiqzxIofEWpn7G964BmKDIM7m1hEP29Q==
+  dependencies:
+    nom-events "^1.0.3"
 
 pixi.js@^4.5.0:
   version "4.8.9"

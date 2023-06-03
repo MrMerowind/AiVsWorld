@@ -7,6 +7,7 @@ import { useTick } from '@pixi/react';
 import { backgroundMovesPerPreview, brainLimit, tileScale, tileSize } from '../types/global';
 import { Brain } from '../utils/brain';
 import { stringify } from 'querystring';
+import { keyboard } from '@testing-library/user-event/dist/keyboard';
 
 export function World() {
 
@@ -17,10 +18,40 @@ export function World() {
     const prevScore = useRef(-1);
     const bestScore = useRef(0);
     const testedNeuralNetworks = useRef(0);
+    const pauseBackend = useRef(false);
+    
+    function onKeyDown(e: KeyboardEvent)
+    {
+        if(e.code === "KeyR")
+        {
+            ctx.previewBrain = new Brain(ctx.bestBrainCopy);
+            ctx.previewWorld = new SingleWorld();
+        }
+        if(e.code === "KeyE")
+        {
+            pauseBackend.current = false;
+        }
+        if(e.code === "KeyD")
+        {
+            pauseBackend.current = true;
+        }
+    }
+
+    
+
+    useEffect(() => {
+
+        document.addEventListener("keydown", onKeyDown);
+
+        return () => {
+            document.removeEventListener("keydown", onKeyDown);
+        }
+    }, []);
 
     useTick((delta) => {
+
         
-        for(let i = 0; i < ctx.brains.length; i++)
+        for(let i = 0; i < ctx.brains.length && !pauseBackend.current; i++)
         {
             if(ctx.worlds[i] && ctx.brains[i])
             {

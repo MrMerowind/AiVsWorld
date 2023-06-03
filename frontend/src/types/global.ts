@@ -17,7 +17,7 @@ export const backgroundMovesPerPreview = 200;
 
 export enum EnemyDamage{
     Rat = 0,
-    Panda = 1,
-    Alces = 5,
-    Ridder = 50
+    Panda = 5,
+    Alces = 50,
+    Ridder = 100
 }
