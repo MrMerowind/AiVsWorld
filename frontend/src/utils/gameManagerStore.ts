@@ -2,12 +2,17 @@ import { makeAutoObservable } from "mobx";
 import { GameScreen } from "./gameScreen";
 import { GameCamera } from "./gameCamera";
 import { SingleWorld } from "./singleWorld";
+import { Brain } from "./brain";
+import { brainLimit } from "../types/global";
 
 export interface IGameManagerStore{
     screen: GameScreen;
     camera: GameCamera;
     worlds: SingleWorld[];
     bestWorld: SingleWorld | null;
+    bestBrain: Brain;
+    brains: Brain[];
+    copyBestBrain: () => void;
 }
 
 export class GameManagerStore implements IGameManagerStore{
@@ -15,6 +20,17 @@ export class GameManagerStore implements IGameManagerStore{
     public camera: GameCamera;
     public worlds: SingleWorld[] = [];
     public bestWorld: SingleWorld | null;
+
+    public bestBrain: Brain = new Brain();
+    public brains: Brain[] = [];
+
+    copyBestBrain()
+    {
+        this.brains = [];
+
+        for(let i = 0; i < brainLimit; i++);
+        this.brains.push(new Brain(this.bestBrain));
+    }
 
     constructor(gameData: GameManagerStore | null = null)
     {   
@@ -24,6 +40,7 @@ export class GameManagerStore implements IGameManagerStore{
             this.camera = gameData.camera;
             this.worlds = gameData.worlds;
             this.bestWorld = gameData.bestWorld;
+            this.brains = gameData.brains;
         }
         else
         {
@@ -35,7 +52,7 @@ export class GameManagerStore implements IGameManagerStore{
                 this.worlds[i] = new SingleWorld();
             }
 
-            this.bestWorld = this.worlds[0];
+            this.bestWorld = new SingleWorld();
         }
         makeAutoObservable(this);
             

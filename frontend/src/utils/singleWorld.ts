@@ -223,6 +223,9 @@ export class SingleWorld{
         const isOutOfBounds = startPositionX < 0 || startPositionX >= SingleWorld.WORLD_WIDTH || startPositionY < 0 || startPositionY >= SingleWorld.WORLD_HEIGHT;
         if(isOutOfBounds) return;
 
+        const isLimitedByObject = this.onGrass[indexEnd] === OnGrass.Bush || this.onGrass[indexEnd] === OnGrass.Wall;
+        if(isLimitedByObject) return;
+
         if(endTemperature >= startTemperature) return;
 
         const newTemperature = (Math.floor((startTemperature - endTemperature) * 0.2) + endTemperature);

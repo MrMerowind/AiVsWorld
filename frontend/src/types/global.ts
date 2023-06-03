@@ -12,6 +12,7 @@ export enum OnGrass{
 
 export const tileScale = 0.4;
 export const tileSize = 128;
+export const brainLimit = 10;
 
 export enum EnemyDamage{
     Rat = 0,
