@@ -4,7 +4,7 @@ import { TileComponent } from './Tile';
 import { Terrain } from '../data/filePaths';
 import { SingleWorld } from '../utils/singleWorld';
 import { useTick } from '@pixi/react';
-import { backgroundMovesPerPreview, tileScale, tileSize } from '../types/global';
+import { backgroundMovesPerPreview, brainLimit, tileScale, tileSize } from '../types/global';
 import { Brain } from '../utils/brain';
 import { stringify } from 'querystring';
 
@@ -14,7 +14,9 @@ export function World() {
     const ctx = useGameManagerStore();
 
 
+    const prevScore = useRef(-1);
     const bestScore = useRef(0);
+    const testedNeuralNetworks = useRef(0);
 
     useTick((delta) => {
         
@@ -22,23 +24,23 @@ export function World() {
         {
             if(ctx.worlds[i] && ctx.brains[i])
             {
-                if(!ctx.worlds[i].isGameFinished())
-                {
-                    for(let z = 0; z < backgroundMovesPerPreview; z++)
-                        if(!ctx.worlds[i].isGameFinished())
-                            if(ctx.worlds[i].play()) ctx.brains[i].makeDecision(ctx.worlds[i]);
-                        else break;
-                }
-                else
-                {
-                    if(ctx.worlds[i].player.survivalPoints > bestScore.current)
+                for(let z = 0; z < backgroundMovesPerPreview; z++)
+                    if(!ctx.worlds[i].isGameFinished())
+                    {
+                        if(ctx.worlds[i].play()) ctx.brains[i].makeDecision(ctx.worlds[i]);
+                    }
+                    if(ctx.worlds[i].player.survivalPoints >= bestScore.current)
                     {
                         bestScore.current = ctx.worlds[i].player.survivalPoints;
                         ctx.bestBrainCopy = new Brain(ctx.brains[i]);
                         localStorage.setItem("brain", JSON.stringify(ctx.bestBrainCopy));
-                        console.log("Score: ", bestScore.current);
+
+                        if(prevScore.current < bestScore.current)
+                        {
+                            console.log("Score: ", bestScore.current);
+                            prevScore.current = bestScore.current;
+                        }
                     }
-                }
             }
         }
         if(ctx.previewWorld && ctx.previewBrain)
@@ -63,6 +65,8 @@ export function World() {
         }
         if(allFinished)
         {
+            testedNeuralNetworks.current += brainLimit;
+            console.log("Tested neural networks: ", testedNeuralNetworks.current);
             ctx.copyBestBrain();
             ctx.resetWorlds();
         }

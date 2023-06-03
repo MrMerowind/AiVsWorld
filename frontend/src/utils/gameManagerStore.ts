@@ -32,7 +32,7 @@ export class GameManagerStore implements IGameManagerStore{
 
     copyBestBrain()
     {
-        this.brains = new Array<Brain>(10);
+        this.brains = new Array<Brain>(brainLimit);
 
         for(let i = 0; i < brainLimit; i++)
             this.brains[i] = new Brain(this.bestBrainCopy);

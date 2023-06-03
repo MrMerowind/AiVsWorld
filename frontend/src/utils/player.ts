@@ -17,14 +17,14 @@ export class Player{
 
     addInventory(value: number)
     {
-        this.survivalPoints += value > 0 ? value : -value;
+        this.survivalPoints += value > 0 ? value : 0;
         this.inventory += value;
         if(this.inventory > Player.MAX_INVENTORY) this.inventory = Player.MAX_INVENTORY;
     }
 
     addHealth(value: number)
     {
-        this.survivalPoints += value > 0 ? value : -value;
+        this.survivalPoints += value > 0 ? value : 0;
         this.health += value;
     }
 

@@ -1,4 +1,4 @@
-import { EnemyDamage, OnGrass, Seasons } from "../types/global";
+import { EnemyDamage, OnGrass, Seasons, brainLimit } from "../types/global";
 import { Player } from "./player";
 
 export class SingleWorld{
@@ -8,10 +8,10 @@ export class SingleWorld{
     globalTemperature: number = 160;
     private timeElapsed: number = 0;
     private previousTimeElapsed: number = 0;
-    static readonly WORLD_COUNT = 10;
+    static readonly WORLD_COUNT = brainLimit;
     static readonly WORLD_WIDTH = 50;
     static readonly WORLD_HEIGHT = 50;
-    static readonly WORLD_TICK_TIME = 300;
+    static readonly WORLD_TICK_TIME = 200;
     static readonly WORLD_SEASON_TICKS = 200;
     static readonly WORLD_BURNING_MINIMUM_TEMPERATURE = 180;
     static readonly WORLD_ZERO_TEMPERATURE = 100;
@@ -230,16 +230,16 @@ export class SingleWorld{
         this.grass[indexEnd] = newTemperature;
 
         const newIndex1 = ((endPositionX - 1) % SingleWorld.WORLD_WIDTH) + ((endPositionY) % SingleWorld.WORLD_HEIGHT) * SingleWorld.WORLD_WIDTH;
-        if(startPositionX >= endPositionX) 
+        if(startPositionX <= endPositionX) 
             this.warmthQueue.push([indexEnd, newIndex1, distance + 1]);
         const newIndex2 = ((endPositionX + 1) % SingleWorld.WORLD_WIDTH) + ((endPositionY) % SingleWorld.WORLD_HEIGHT) * SingleWorld.WORLD_WIDTH; 
-        if(startPositionX <= endPositionX) 
+        if(startPositionX >= endPositionX) 
             this.warmthQueue.push([indexEnd, newIndex2, distance + 1]);
         const newIndex3 = ((endPositionX) % SingleWorld.WORLD_WIDTH) + ((endPositionY - 1) % SingleWorld.WORLD_HEIGHT) * SingleWorld.WORLD_WIDTH; 
-        if(startPositionY >= endPositionY) 
+        if(startPositionY <= endPositionY) 
         this.warmthQueue.push([indexEnd, newIndex3, distance + 1]);
         const newIndex4 = ((endPositionX) % SingleWorld.WORLD_WIDTH) + ((endPositionY + 1) % SingleWorld.WORLD_HEIGHT) * SingleWorld.WORLD_WIDTH; 
-        if(startPositionY <= endPositionY) 
+        if(startPositionY >= endPositionY) 
         this.warmthQueue.push([indexEnd, newIndex4, distance + 1]);
     }
 
