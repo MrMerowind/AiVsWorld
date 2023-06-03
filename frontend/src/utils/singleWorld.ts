@@ -309,8 +309,13 @@ export class SingleWorld{
 
     moveUnit(x: number, y: number)
     {
-        const newPositionX = (this.player.positionX + x) % SingleWorld.WORLD_WIDTH;
-        const newPositionY = (this.player.positionY + y) % SingleWorld.WORLD_HEIGHT;
+        const newPositionX = (this.player.positionX + x);
+        const newPositionY = (this.player.positionY + y);
+
+        const isOutOfBounds = newPositionX < 0 || newPositionX >= SingleWorld.WORLD_WIDTH || newPositionY < 0 || newPositionY >= SingleWorld.WORLD_HEIGHT;
+
+        if(isOutOfBounds) return;
+
         const oldIndex = this.player.positionX + this.player.positionY * SingleWorld.WORLD_WIDTH;
         const newIndex = newPositionX + newPositionY * SingleWorld.WORLD_WIDTH;
 
