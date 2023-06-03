@@ -1,10 +1,12 @@
 export class Player{
     positionX = 10;
     positionY = 10;
-    health = 100;
+    private health = 100;
     warmth = 20;
     energy = 100;
-    inventory = 0;
+    private inventory = 0;
+
+    survivalPoints = 0;
 
 
     public static readonly MAX_ENERGY = 100;
@@ -15,8 +17,25 @@ export class Player{
 
     addInventory(value: number)
     {
+        this.survivalPoints += value > 0 ? value : -value;
         this.inventory += value;
         if(this.inventory > Player.MAX_INVENTORY) this.inventory = Player.MAX_INVENTORY;
+    }
+
+    addHealth(value: number)
+    {
+        this.survivalPoints += value > 0 ? value : -value;
+        this.health += value;
+    }
+
+    getHealth()
+    {
+        return this.health;
+    }
+
+    getInventory()
+    {
+        return this.inventory;
     }
 
     constructor()

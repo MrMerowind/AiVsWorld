@@ -5,7 +5,6 @@ import { World } from "./World";
 
 export function MainGameComponent(){
 
-    const ctx = useGameManagerStore();
     const app = useApp();
 
     return (

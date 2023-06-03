@@ -9,27 +9,43 @@ export interface IGameManagerStore{
     screen: GameScreen;
     camera: GameCamera;
     worlds: SingleWorld[];
-    bestWorld: SingleWorld | null;
-    bestBrain: Brain;
+    previewWorld: SingleWorld;
+    previewBrain: Brain;
+    bestWorldCopy: SingleWorld;
+    bestBrainCopy: Brain;
     brains: Brain[];
     copyBestBrain: () => void;
+    resetWorlds: () => void;
 }
 
 export class GameManagerStore implements IGameManagerStore{
     public screen: GameScreen;
     public camera: GameCamera;
     public worlds: SingleWorld[] = [];
-    public bestWorld: SingleWorld | null;
-
-    public bestBrain: Brain = new Brain();
+    
     public brains: Brain[] = [];
+    public bestBrainCopy: Brain = new Brain(null);
+    public bestWorldCopy: SingleWorld = new SingleWorld();
+
+    public previewWorld: SingleWorld = new SingleWorld();
+    public previewBrain: Brain = new Brain(this.bestBrainCopy);
 
     copyBestBrain()
     {
-        this.brains = [];
+        this.brains = new Array<Brain>(10);
 
-        for(let i = 0; i < brainLimit; i++);
-        this.brains.push(new Brain(this.bestBrain));
+        for(let i = 0; i < brainLimit; i++)
+            this.brains[i] = new Brain(this.bestBrainCopy);
+        for(let i = 0; i < brainLimit; i++)
+            this.brains[i].evolution();
+    }
+
+    resetWorlds()
+    {
+        for(let i = 0; i < SingleWorld.WORLD_COUNT; i++)
+        {
+            this.worlds[i] = new SingleWorld();
+        }
     }
 
     constructor(gameData: GameManagerStore | null = null)
@@ -39,20 +55,26 @@ export class GameManagerStore implements IGameManagerStore{
             this.screen = gameData.screen;
             this.camera = gameData.camera;
             this.worlds = gameData.worlds;
-            this.bestWorld = gameData.bestWorld;
+            this.previewWorld = gameData.previewWorld;
             this.brains = gameData.brains;
+            this.bestBrainCopy = gameData.bestBrainCopy;
+            this.bestWorldCopy = gameData.bestWorldCopy;
         }
         else
         {
             this.screen = new GameScreen();
             this.camera = new GameCamera();
+            this.bestBrainCopy = new Brain();
+            this.bestWorldCopy = new SingleWorld();
 
             for(let i = 0; i < SingleWorld.WORLD_COUNT; i++)
             {
                 this.worlds[i] = new SingleWorld();
             }
 
-            this.bestWorld = new SingleWorld();
+            this.previewWorld = new SingleWorld();
+            this.previewBrain = new Brain();
+            this.copyBestBrain();
         }
         makeAutoObservable(this);
             

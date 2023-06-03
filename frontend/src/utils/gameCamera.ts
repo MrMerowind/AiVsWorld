@@ -16,7 +16,7 @@ export class GameCamera{
         this.playerPositionX = 0;
         this.playerPositionY = 0;
         this.gameScreenHandle = null;
-        this.cameraSpeed = 0.01;
+        this.cameraSpeed = 1;
     }
 
     public setGameScreenHandle(handle: GameScreen): void

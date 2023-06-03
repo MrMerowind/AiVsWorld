@@ -1,4 +1,3 @@
-import { Terrain } from "../data/filePaths";
 import { EnemyDamage, OnGrass, Seasons } from "../types/global";
 import { Player } from "./player";
 
@@ -12,13 +11,13 @@ export class SingleWorld{
     static readonly WORLD_COUNT = 10;
     static readonly WORLD_WIDTH = 50;
     static readonly WORLD_HEIGHT = 50;
-    static readonly WORLD_TICK_TIME = 1000;
+    static readonly WORLD_TICK_TIME = 300;
     static readonly WORLD_SEASON_TICKS = 200;
     static readonly WORLD_BURNING_MINIMUM_TEMPERATURE = 180;
     static readonly WORLD_ZERO_TEMPERATURE = 100;
     static readonly WORLD_FIRE_TEMPERATURE = 200;
     public tickCount: number = 0;
-    public player: Player = new Player();
+    public player: Player;
 
     // For random numbers
     m_w = 123456789;
@@ -45,6 +44,7 @@ export class SingleWorld{
     constructor()
     {
         this.setSeed(1595423);
+        this.player = new Player();
         for(let i = 0; i < SingleWorld.WORLD_WIDTH; i++)
         {
             for(let j = 0; j < SingleWorld.WORLD_HEIGHT; j++)
@@ -99,9 +99,6 @@ export class SingleWorld{
             else if(this.season === Seasons.Summer) this.globalTemperature = 180; 
             else if(this.season === Seasons.Autumn) this.globalTemperature = 140; 
             else if(this.season === Seasons.Winter) this.globalTemperature = 100;
-
-            console.log("Aktualny sezon: ", this.season);
-
         }
         this.applySeasonTemperature();
     }
@@ -140,22 +137,22 @@ export class SingleWorld{
                 
                 if(this.onGrass[enemyIndex] === OnGrass.Rat)
                 {
-                    this.player.health -= EnemyDamage.Rat;
+                    this.player.addHealth(EnemyDamage.Rat);
                     this.player.addInventory(1);
                     this.player.energy -= 2;
                 } else if(this.onGrass[enemyIndex] === OnGrass.Panda)
                 {
-                    this.player.health -= EnemyDamage.Panda;
+                    this.player.addHealth(EnemyDamage.Panda);
                     this.player.addInventory(2);
                     this.player.energy -= 2;
                 } else if(this.onGrass[enemyIndex] === OnGrass.Alces)
                 {
-                    this.player.health -= EnemyDamage.Alces;
+                    this.player.addHealth(EnemyDamage.Alces);
                     this.player.addInventory(5);
                     this.player.energy -= 2;
                 } else if(this.onGrass[enemyIndex] === OnGrass.Ridder)
                 {
-                    this.player.health -= EnemyDamage.Ridder;
+                    this.player.addHealth(EnemyDamage.Ridder);
                     this.player.addInventory(10);
                     this.player.energy -= 2;
                 }
@@ -274,7 +271,13 @@ export class SingleWorld{
         });
     }
 
-    play(delta: number | null = null)
+    isGameFinished()
+    {
+        if(this.player.getHealth() <= 0) return true;
+        else return false;
+    }
+
+    play(delta: number | null = null): boolean
     {
         if(delta !== null)
         {
@@ -283,7 +286,7 @@ export class SingleWorld{
         }
 
         const isTimeTrackedAndNotEnaughPassed = delta !== null && (this.previousTimeElapsed + SingleWorld.WORLD_TICK_TIME > this.timeElapsed);
-        if(isTimeTrackedAndNotEnaughPassed) return;
+        if(isTimeTrackedAndNotEnaughPassed) return false;
         
         this.previousTimeElapsed += SingleWorld.WORLD_TICK_TIME;
         
@@ -291,6 +294,8 @@ export class SingleWorld{
         this.moveEnemies();
         this.spreadFire();
         this.spreadWarmth();
+        this.player.addHealth(-1);
+        return true;
     }
 
     moveUnit(x: number, y: number)
@@ -308,31 +313,35 @@ export class SingleWorld{
             this.player.positionY = newPositionY;
         } else if(this.onGrass[newIndex] === OnGrass.Wall || this.onGrass[newIndex] === OnGrass.Bush)
         {
-            this.onGrass[oldIndex] = 0;
+            this.onGrass[newIndex] = 0;
             this.player.addInventory(1);
         } else if(this.onGrass[newIndex] === OnGrass.Fireplace)
         {
-            this.player.health -= Player.FIRE_DAMAGE;
+            this.player.addHealth(Player.FIRE_DAMAGE);
         } else if(this.onGrass[newIndex] === OnGrass.Rat)
         {
-            this.player.health -= EnemyDamage.Rat;
+            this.player.addHealth(EnemyDamage.Rat);
             this.player.addInventory(1);
             this.player.energy -= 1;
+            this.onGrass[newIndex] = 0;
         } else if(this.onGrass[newIndex] === OnGrass.Panda)
         {
-            this.player.health -= EnemyDamage.Panda;
+            this.player.addHealth(EnemyDamage.Panda);
             this.player.addInventory(2);
             this.player.energy -= 1;
+            this.onGrass[newIndex] = 0;
         } else if(this.onGrass[newIndex] === OnGrass.Alces)
         {
-            this.player.health -= EnemyDamage.Alces;
+            this.player.addHealth(EnemyDamage.Alces);
             this.player.addInventory(5);
             this.player.energy -= 1;
+            this.onGrass[newIndex] = 0;
         } else if(this.onGrass[newIndex] === OnGrass.Ridder)
         {
-            this.player.health -= EnemyDamage.Ridder;
+            this.player.addHealth(EnemyDamage.Ridder);
             this.player.addInventory(10);
             this.player.energy -= 1;
+            this.onGrass[newIndex] = 0;
         }
     }
 
@@ -354,64 +363,64 @@ export class SingleWorld{
         if(this.onGrass[newIndex] === 0) this.onGrass[newIndex] = OnGrass.Wall;
     }
 
-    eatAndRest()
+    eatAndRest = () =>
     {
-        if(this.player.inventory > 0)
+        if(this.player.getInventory() > 0)
         {
             this.player.addInventory(-1);
-            this.player.health += 10;
+            this.player.addHealth(10);
         }
         this.player.energy++;
     }
-    rest()
+    rest = () =>
     {
         this.player.energy++;
     }
-    moveLeft()
+    moveLeft = () =>
     {
         this.moveUnit(-1, 0);
     }
-    moveRight()
+    moveRight = () =>
     {
         this.moveUnit(1, 0);
     }
-    moveUp()
+    moveUp = () =>
     {
         this.moveUnit(0, -1);
     }
-    moveDown()
+    moveDown = () =>
     {
         this.moveUnit(0, 1);
     }
-    placeFireplaceLeft()
+    placeFireplaceLeft = () =>
     {
         this.placeFireplaceUnit(-1, 0);
     }
-    placeFireplaceRight()
+    placeFireplaceRight = () =>
     {
         this.placeFireplaceUnit(1, 0);
     }
-    placeFireplaceUp()
+    placeFireplaceUp = () =>
     {
         this.placeFireplaceUnit(0, -1);
     }
-    placeFireplaceDown()
+    placeFireplaceDown = () =>
     {
         this.placeFireplaceUnit(0, 1);
     }
-    placeWallLeft()
+    placeWallLeft = () =>
     {
         this.placeFireplaceUnit(-1, 0);
     }
-    placeWallRight()
+    placeWallRight = () =>
     {
         this.placeFireplaceUnit(1, 0);
     }
-    placeWallUp()
+    placeWallUp = () =>
     {
         this.placeFireplaceUnit(0, -1);
     }
-    placeWallDown()
+    placeWallDown = () =>
     {
         this.placeFireplaceUnit(0, 1);
     }
