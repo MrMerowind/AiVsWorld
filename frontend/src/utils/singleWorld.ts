@@ -57,8 +57,8 @@ export class SingleWorld{
                 if(rnd < 200) this.onGrass[grassIndex] = OnGrass.Bush;
                 else if(rnd < 250) this.onGrass[grassIndex] = OnGrass.Rat;
                 else if(rnd < 275) this.onGrass[grassIndex] = OnGrass.Panda;
-                else if(rnd < 280) this.onGrass[grassIndex] = OnGrass.Alces;
-                else if(rnd < 281) this.onGrass[grassIndex] = OnGrass.Ridder;
+                else if(rnd < 300) this.onGrass[grassIndex] = OnGrass.Alces;
+                else if(rnd < 310) this.onGrass[grassIndex] = OnGrass.Ridder;
 
 
                 if(i === this.player.positionX && j === this.player.positionY)
@@ -78,8 +78,8 @@ export class SingleWorld{
                 const grassIndex = i + j * SingleWorld.WORLD_WIDTH;
                 const shouldTemperatureBeLower = this.grass[grassIndex] > this.globalTemperature && this.grass[grassIndex] > 100;
                 const shouldTemperatureBeHigher = this.grass[grassIndex] < this.globalTemperature && this.grass[grassIndex] < 200;
-                if(shouldTemperatureBeLower) this.grass[grassIndex] -= 5;
-                else if(shouldTemperatureBeHigher) this.grass[grassIndex] += 5;
+                if(shouldTemperatureBeLower) this.grass[grassIndex] -= 1;
+                else if(shouldTemperatureBeHigher) this.grass[grassIndex] += 1;
             }
         }
     }
@@ -230,16 +230,16 @@ export class SingleWorld{
         this.grass[indexEnd] = newTemperature;
 
         const newIndex1 = ((endPositionX - 1) % SingleWorld.WORLD_WIDTH) + ((endPositionY) % SingleWorld.WORLD_HEIGHT) * SingleWorld.WORLD_WIDTH;
-        if(startPositionX <= endPositionX) 
+        if(startPositionX >= endPositionX) 
             this.warmthQueue.push([indexEnd, newIndex1, distance + 1]);
         const newIndex2 = ((endPositionX + 1) % SingleWorld.WORLD_WIDTH) + ((endPositionY) % SingleWorld.WORLD_HEIGHT) * SingleWorld.WORLD_WIDTH; 
-        if(startPositionX >= endPositionX) 
+        if(startPositionX <= endPositionX) 
             this.warmthQueue.push([indexEnd, newIndex2, distance + 1]);
         const newIndex3 = ((endPositionX) % SingleWorld.WORLD_WIDTH) + ((endPositionY - 1) % SingleWorld.WORLD_HEIGHT) * SingleWorld.WORLD_WIDTH; 
-        if(startPositionY <= endPositionY) 
+        if(startPositionY >= endPositionY) 
         this.warmthQueue.push([indexEnd, newIndex3, distance + 1]);
         const newIndex4 = ((endPositionX) % SingleWorld.WORLD_WIDTH) + ((endPositionY + 1) % SingleWorld.WORLD_HEIGHT) * SingleWorld.WORLD_WIDTH; 
-        if(startPositionY >= endPositionY) 
+        if(startPositionY <= endPositionY) 
         this.warmthQueue.push([indexEnd, newIndex4, distance + 1]);
     }
 
