@@ -10,6 +10,7 @@ export const GameManager = () => {
 
     ctx.screen.setAutoSize();
     Terrain.preloadAllTextures();
+    ctx.camera.setGameScreenHandle(ctx.screen);
 
     return (
         <GameManagerStoreProvider gameData={ctx}>

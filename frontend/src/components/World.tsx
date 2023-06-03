@@ -4,18 +4,21 @@ import { TileComponent } from './Tile';
 import { Terrain } from '../data/filePaths';
 import { SingleWorld } from '../utils/singleWorld';
 import { useTick } from '@pixi/react';
+import { tileScale, tileSize } from '../types/global';
 
 export function World() {
 
     const [bestWorldTicks, setBestWorldTicks] = useState(0);
     const ctx = useGameManagerStore();
 
-    const tileScale = 0.4;
-    const tileSize = 128;
-
     useTick((delta) => {
-        ctx.bestWorld?.play(delta);
-        setBestWorldTicks(ctx.bestWorld ? ctx.bestWorld.tickCount : 0);
+        if(ctx.bestWorld)
+        {
+            ctx.bestWorld.play(delta);
+            setBestWorldTicks(ctx.bestWorld.tickCount);
+            ctx.camera.setPlayerPosition(ctx.bestWorld.player.positionX, ctx.bestWorld.player.positionY);
+            ctx.camera.centerOnPlayer();
+        }
     });
 
 

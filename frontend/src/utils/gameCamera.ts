@@ -1,21 +1,22 @@
+import { tileScale, tileSize } from "../types/global";
 import { GameScreen } from "./gameScreen";
 
 export class GameCamera{
-    private offsetX;
-    private offsetY;
-    private cameraSpeed;
+    private offsetX: number;
+    private offsetY: number;
+    private cameraSpeed: number;
     private gameScreenHandle: GameScreen | null;
     private playerPositionX: number;
     private playerPositionY: number;
 
     constructor()
     {
-        this.offsetX = 0;
-        this.offsetY = 0;
+        this.offsetX = 0.0;
+        this.offsetY = 0.0;
         this.playerPositionX = 0;
         this.playerPositionY = 0;
         this.gameScreenHandle = null;
-        this.cameraSpeed = 0.1;
+        this.cameraSpeed = 0.01;
     }
 
     public setGameScreenHandle(handle: GameScreen): void
@@ -31,15 +32,15 @@ export class GameCamera{
     {
         if(this.gameScreenHandle === null) return;
 
-        this.offsetX = this.playerPositionX - this.gameScreenHandle.getCenterHorizontal();
-        this.offsetY = this.playerPositionY - this.gameScreenHandle.getCenterVertical();
+        this.offsetX = this.playerPositionX - this.gameScreenHandle.getCenterHorizontal() / (tileSize * tileScale);
+        this.offsetY = this.playerPositionY - this.gameScreenHandle.getCenterVertical() / (tileSize * tileScale);
     }
     public moveTowardsPlayer(delta: number): void
     {
         if(this.gameScreenHandle === null) return;
 
-        const moveToX: number = this.playerPositionX - this.gameScreenHandle.getCenterHorizontal();
-        const moveToY: number = this.playerPositionY - this.gameScreenHandle.getCenterVertical();
+        const moveToX: number = this.playerPositionX - this.gameScreenHandle.getCenterHorizontal() / (tileSize * tileScale);
+        const moveToY: number = this.playerPositionY - this.gameScreenHandle.getCenterVertical() / (tileSize * tileScale);
 
         const moveToXAbs = moveToX - this.offsetX;
         const moveToYAbs = moveToY - this.offsetY;
@@ -47,12 +48,12 @@ export class GameCamera{
         const distance = Math.hypot(moveToXAbs, moveToYAbs);
 
 
-        const minimumDistance = 20;
+        const minimumDistance = 0.1;
 
         if(distance >= minimumDistance)
         {
-            if(Math.abs(moveToXAbs) > minimumDistance) this.offsetX += (moveToXAbs / distance) * this.cameraSpeed * delta;
-            if(Math.abs(moveToYAbs) > minimumDistance) this.offsetY += (moveToYAbs / distance) * this.cameraSpeed * delta;
+            if(Math.abs(moveToXAbs) > minimumDistance) this.offsetX += (moveToXAbs / distance) * (this.cameraSpeed * delta);
+            if(Math.abs(moveToYAbs) > minimumDistance) this.offsetY += (moveToYAbs / distance) * (this.cameraSpeed * delta);
         }
 
     }

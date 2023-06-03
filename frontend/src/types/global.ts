@@ -9,3 +9,13 @@ export enum OnGrass{
     Ai = 16,
     Bush = 17
 }
+
+export const tileScale = 0.4;
+export const tileSize = 128;
+
+export enum EnemyDamage{
+    Rat = 0,
+    Panda = 1,
+    Alces = 5,
+    Ridder = 50
+}
