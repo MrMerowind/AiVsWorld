@@ -60,7 +60,7 @@ export function World() {
                     {
                         if(ctx.worlds[i].play()) ctx.brains[i].makeDecision(ctx.worlds[i]);
                     }
-                    if(ctx.worlds[i].player.survivalPoints >= bestScore.current)
+                    if(ctx.worlds[i].player.survivalPoints > bestScore.current)
                     {
                         bestScore.current = ctx.worlds[i].player.survivalPoints;
                         ctx.bestBrainCopy = new Brain(ctx.brains[i]);
